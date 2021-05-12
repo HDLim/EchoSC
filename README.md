@@ -1,5 +1,7 @@
 # EchoSC
-**Echo Server and Echo Client**
+**Echo Server and Client**
+
+A Simple Echo Server and Client chatroom that can handle multiple clients.
 
 ## How-to-Use:
 1. Download the Client.java and Server.java
