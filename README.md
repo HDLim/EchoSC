@@ -10,5 +10,5 @@ A Simple Echo Server and Client chatroom that can handle multiple clients.
 
 ### Credits(Members):
 * Harry Dale E. Lim
-* Kurt Jack Rodriguez
+* Kurt Jack J. Rodriguez
 * Dave G. Obradas
