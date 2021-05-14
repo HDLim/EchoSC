@@ -1,27 +1,39 @@
-import java.net.*;
-import java.io.*;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Server {
 	private static int clientCounter = 0;
 	
 	public static void main(String[] args) throws IOException {
+		
 		ServerSocket server = null;
 		int count=0;
+		
 		System.out.println("-----------------------SERVER NOW ONLINE---------------------");
+		
 		try {
+			
+			//--------------------------------- Setting up the server
 			server = new ServerSocket(6013);
 			server.setReuseAddress(true);
 			System.out.println("Waiting for Clients to connect...");
+			
+			//--------------------------------- Accepting clients
 			while (true) {
 				Socket client = server.accept();
 				System.out.println("A Client has connected: "+ client.getInetAddress().getHostAddress());
 				count++;
 				clientCounter++;
+				//----------------------------- Using threading for multiple clients
 				Threader cSock = new Threader(client,count);
 				
 				new Thread(cSock).start();
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -52,23 +64,22 @@ public class Server {
 			PrintWriter sout = null;
 			
 			try {	
+				
 				sin = new BufferedReader(new InputStreamReader(this.cSock.getInputStream()));
 				sout = new PrintWriter(this.cSock.getOutputStream(),true);
 				String line;
+				
 				while ((line=sin.readLine()) != null) {
 					
 					if(!"exit".equalsIgnoreCase(line)) {
 						System.out.println("Sent from Client["+cCount+"]: "+line);
 						sout.println(line);
+							
 					}else {
 						System.out.println("====================================================");
 						System.out.println("Client["+cCount+"] has disconnected from the server! ");
 						System.out.println("====================================================");
 						clientCounter--;
-						if (clientCounter==0){
-							System.out.println("\nNo Client is connected to the server...Now exiting....");
-							System.exit(0);
-						}
 					}
 					
 				}
@@ -82,8 +93,14 @@ public class Server {
 					}
 					if (sin!=null) {
 						sin.close();
-						cSock.close();
 					}
+					
+					cSock.close();
+					if (clientCounter==0){
+						System.out.println("\nNo Client is connected to the server...Now exiting....");
+						System.exit(0);
+					}
+					
 										
 				} catch (IOException e) {
 					e.printStackTrace();
